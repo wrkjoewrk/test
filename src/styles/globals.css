@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[#f7f3ee] text-stone-900;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  @apply bg-white text-brand-text antialiased leading-base;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6rem;
 }

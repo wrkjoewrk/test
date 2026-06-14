@@ -1,120 +1,337 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Globe,
-  ArrowRight,
   Building2,
   Package,
   ShoppingBag,
   Briefcase,
+  Globe,
   Mail,
-  MapPin,
-  ChevronRight,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
+const sectionLabelClass = "text-base font-semibold text-brand-text";
+const sectionLabelGapClass = "mt-2";
+
+const bodyTextSizeClass = "text-base leading-base md:text-lg";
+
+const heroBodyTextClass = `${bodyTextSizeClass} text-white/90`;
+
+const bodyTextClass = `${bodyTextSizeClass} text-brand-muted`;
+
+const bodyTextLightClass = `${bodyTextSizeClass} text-white/85`;
+
+const heroImages = [
+  "/images/hero1.jpg",
+  "/images/hero2.jpg",
+  "/images/hero3.jpg",
+  "/images/hero4.jpg",
+];
 
 const businessAreas = [
   {
     title: "K-Food Export",
     icon: Package,
-    items: [
-      "Multi-product export",
-      "Container consolidation",
-      "OEM / private brand production",
-      "Global distribution",
-    ],
+    description:
+      "Multi-product small-lot export, container consolidation, and OEM (private brand) production management.",
   },
   {
-    title: "Premium Food Import",
-    icon: ShoppingBag,
-    items: [
-      "Exclusive product sourcing",
-      "Premium international foods",
-      "Import distribution",
-    ],
-  },
-  {
-    title: "Brand Representation in Korea",
+    title: "Korea Branch & Brand Management",
     icon: Building2,
-    items: [
-      "Korean branch office support",
-      "Brand management",
-      "Sales support",
-    ],
+    description:
+      "Korea branch office representation and brand management for overseas companies, with dedicated personnel assigned under separate agreements.",
   },
   {
     title: "Export Consulting",
     icon: Briefcase,
-    items: [
-      "Market entry consulting",
-      "Overseas market research",
-      "Japan-focused support",
-    ],
+    description:
+      "Export consulting for domestic companies expanding into international markets.",
+  },
+  {
+    title: "Market Entry Support · Japan",
+    icon: Globe,
+    description:
+      "Overseas market research and market entry support, with specialized expertise in Japan.",
+  },
+  {
+    title: "Premium Food Import",
+    icon: ShoppingBag,
+    description:
+      "Premium food import and distribution, exclusive product sourcing, and import agency services.",
   },
 ];
 
 const categories = [
-  "Dairy & Beverages",
-  "Kimchi",
-  "Rice Cake (Tteok)",
-  "HMR / Ready-to-eat Korean meals",
-  "Coffee (RTD, capsule, stick)",
-  "Dessert & Snacks",
+  {
+    name: "Dairy & Beverages",
+    brands: "Maeil Soy Milk, Beverages, Freezer Pops, Frozen Cakes, Selex",
+    image:
+      "https://images.unsplash.com/photo-1550583724-b2692b85b690?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/01-dairy-beverages.jpg",
+  },
+  {
+    name: "Kimchi",
+    brands: "Goidam",
+    image:
+      "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/02-kimchi.jpg",
+  },
+  {
+    name: "Rice Cakes (Tteok)",
+    brands: "Young-uijeong, Daedoo Foods",
+    image:
+      "https://images.unsplash.com/photo-1604908176997-43162e47a1b5?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/03-rice-cakes.jpg",
+  },
+  {
+    name: "HMR & CK-Style Products",
+    brands: "Super Kitchen",
+    image:
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/04-hmr.jpg",
+  },
+  {
+    name: "Branded Foods",
+    brands: "Sajo Daerim (Europe)",
+    image:
+      "https://images.unsplash.com/photo-1606780509525-2eeef2a9a1a2?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/05-branded-foods.jpg",
+  },
+  {
+    name: "Coffee",
+    brands:
+      "Jardin, Ediya RTD (Cup, PET, Pouch), Stick Mix, Capsules, Tea",
+    image:
+      "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/06-coffee.jpg",
+  },
+  {
+    name: "Desserts & Snacks",
+    brands: "Knotted",
+    image:
+      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80",
+    imagePath: "/images/categories/07-desserts-snacks.jpg",
+  },
 ];
 
-const regions = [
-  "Japan / Taiwan",
-  "United States",
+const partnerships = [
+  {
+    tags: ["Japan", "Taiwan"],
+    name: "Naman",
+    description:
+      "Japan's K-Food specialized import and distribution company",
+    logo: "/images/partner logo1.png",
+  },
+  {
+    tags: ["United States"],
+    name: "Taesung Kimchi",
+    description: "U.S. kimchi export company",
+    logo: "/images/partner logo2.png",
+  },
+  {
+    tags: ["Korea HQ"],
+    name: null,
+    description: "Korea-based operating leadership",
+    logo: "/images/partner logo3.png",
+  },
+  {
+    tags: ["Europe"],
+    name: null,
+    description:
+      "Asian food import, distribution, and retail operations company",
+    logo: "/images/partner logo4.png",
+  },
+  {
+    tags: ["South America"],
+    name: null,
+    description: "Asian food import and distribution company",
+    logo: "/images/partner logo5.png",
+  },
+];
+
+type CustomerBrand = {
+  name: string;
+  logo?: string;
+  category: string;
+};
+
+const customerRegions = [
+  "Korea",
+  "Japan",
   "Europe",
-  "South America",
-  "Korea HQ",
+  "United States",
+] as const;
+
+const customerBrands: CustomerBrand[] = [
+  { name: "Shilla Hotel", category: "Korea", logo: "/images/customers/shilla-hotel.png" },
+  { name: "Lotte Hotel", category: "Korea", logo: "/images/customers/lotte-hotel.png" },
+  { name: "Inspire Hotel", category: "Korea", logo: "/images/customers/inspire-hotel.png" },
+  { name: "Pulmuone", category: "Korea", logo: "/images/customers/pulmuone.png" },
+  {
+    name: "Coupang Premium",
+    category: "Korea",
+    logo: "/images/customers/coupang-premium.png",
+  },
+  {
+    name: "Naver Smart Store",
+    category: "Korea",
+    logo: "/images/customers/naver-smart-store.png",
+  },
+  {
+    name: "Shinsegae Department Store Gangnam",
+    category: "Korea",
+    logo: "/images/customers/shinsegae-gangnam.png",
+  },
+  {
+    name: "Shinsegae Cheongdam",
+    category: "Korea",
+    logo: "/images/customers/shinsegae-cheongdam.png",
+  },
+  {
+    name: "Lotte Department Store",
+    category: "Korea",
+    logo: "/images/customers/lotte-department-store.png",
+  },
+  { name: "Aeon", category: "Japan", logo: "/images/customers/aeon.png" },
+  { name: "Costco Japan", category: "Japan", logo: "/images/customers/costco-japan.png" },
+  { name: "Life", category: "Japan", logo: "/images/customers/life.png" },
+  {
+    name: "Uni (Don Quijote)",
+    category: "Japan",
+    logo: "/images/customers/uni-don-quijote.png",
+  },
+  { name: "Okuwa", category: "Japan", logo: "/images/customers/okuwa.png" },
+  { name: "Heiwado", category: "Japan", logo: "/images/customers/heiwado.png" },
+  { name: "Konomiya", category: "Japan", logo: "/images/customers/konomiya.png" },
+  { name: "Izumi", category: "Japan", logo: "/images/customers/izumi.png" },
+  { name: "Torisen", category: "Japan", logo: "/images/customers/torisen.png" },
+  { name: "FamilyMart", category: "Japan", logo: "/images/customers/familymart.png" },
+  { name: "7-Eleven", category: "Japan", logo: "/images/customers/7-eleven.png" },
+  { name: "Lawson", category: "Japan", logo: "/images/customers/lawson.png" },
+  {
+    name: "Korea Food UK",
+    category: "Europe",
+    logo: "/images/customers/korea-food-uk.png",
+  },
+  {
+    name: "Ace Food France",
+    category: "Europe",
+    logo: "/images/customers/ace-food-france.png",
+  },
+  {
+    name: "H Mart (in discussion)",
+    category: "United States",
+    logo: "/images/customers/h-mart.png",
+  },
 ];
 
-const partners = [
-  "Naman · Japan K-Food Import / Distribution",
-  "Taesung Kimchi · U.S. Export Partner",
-  "Korea Food · Europe Asian Food Distribution",
-];
+const customerInternationalBrandRowClass =
+  "mt-2 flex flex-wrap items-start gap-x-2 gap-y-2";
 
-const customers = {
-  Korea: [
-    "Shilla Hotel",
-    "Lotte Hotel",
-    "Inspire Hotel",
-    "Coupang Premium",
-    "Shinsegae Department Store",
-    "SSG Cheongdam",
-  ],
-  Japan: ["Aeon", "Costco Japan", "Don Quijote", "FamilyMart", "7-Eleven", "Lawson"],
-  Europe: ["Korea Food UK", "Ace Food France"],
-  USA: ["H Mart (in discussion)"],
-} as const;
+const customerRegionGroupClass = "flex min-w-0 max-w-full flex-col";
+
+const customerInternationalBrandTileClass =
+  "flex w-[96px] shrink-0 flex-col items-center px-1 py-1 text-center";
+
+type ImportPartner = {
+  name: string;
+  note?: string;
+  logo?: string;
+};
+
+const importPartnerCountries: { country: string; partners: ImportPartner[] }[] =
+  [
+    {
+      country: "France",
+      partners: [
+        {
+          name: "Haute Fromagerie",
+          logo: "/images/import-partners/haute-fromagerie.png",
+        },
+        {
+          name: "Thomas Export",
+          note: "Cheese",
+          logo: "/images/import-partners/thomas-export.png",
+        },
+      ],
+    },
+    {
+      country: "Italy",
+      partners: [
+        { name: "Caform", logo: "/images/import-partners/caform.png" },
+        { name: "Appennino", logo: "/images/import-partners/appennino.png" },
+        {
+          name: "Biscopan",
+          note: "Snack · Domestic & Asia sales rights",
+          logo: "/images/import-partners/biscopan.png",
+        },
+      ],
+    },
+    {
+      country: "Greece",
+      partners: [
+        { name: "Mouriki", logo: "/images/import-partners/mouriki.png" },
+      ],
+    },
+    {
+      country: "Netherlands",
+      partners: [
+        {
+          name: "Visser Kaas",
+          logo: "/images/import-partners/visser-kaas.png",
+        },
+      ],
+    },
+    {
+      country: "United Kingdom",
+      partners: [
+        {
+          name: "Higgins Coffee",
+          note: "Store operations & Coffee",
+          logo: "/images/import-partners/higgins-coffee.png",
+        },
+      ],
+    },
+    {
+      country: "Lithuania",
+      partners: [
+        { name: "Dziugas", logo: "/images/import-partners/dziugas.png" },
+      ],
+    },
+  ];
 
 function SectionTitle({
   eyebrow,
   title,
   description,
+  centered = false,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description?: string;
+  centered?: boolean;
 }) {
   return (
-    <div className="max-w-3xl space-y-3">
-      <p className="text-xs uppercase tracking-[0.24em] text-stone-500">
-        {eyebrow}
-      </p>
-      <h2 className="text-3xl font-semibold tracking-tight text-stone-950 md:text-5xl">
+    <div
+      className={`max-w-4xl ${
+        centered ? "mx-auto text-center" : ""
+      }`}
+    >
+      {eyebrow ? <p className={sectionLabelClass}>{eyebrow}</p> : null}
+      <h2
+        className={`text-3xl font-semibold tracking-[-0.02em] text-brand-text md:text-5xl lg:text-6xl ${
+          eyebrow ? sectionLabelGapClass : ""
+        }`}
+      >
         {title}
       </h2>
       {description ? (
-        <p className="text-sm leading-7 text-stone-600 md:text-base">
+        <p
+          className={`mt-3 ${bodyTextClass} ${
+            centered ? "mx-auto max-w-3xl" : "max-w-3xl"
+          }`}
+        >
           {description}
         </p>
       ) : null}
@@ -123,559 +340,521 @@ function SectionTitle({
 }
 
 export default function DotFoodKoreaLandingPage() {
-  return (
-    <div className="min-h-screen bg-[#f7f3ee] text-stone-900">
-      <header className="sticky top-0 z-50 border-b border-black/5 bg-[#f7f3ee]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-        <a href="#" className="flex items-center">
-  <img
-    src="/images/logo-b.png"
-    alt="DotFoodKorea logo"
-    className="h-4 w-auto object-contain"
-  />
-</a>
-          <nav className="hidden items-center gap-8 text-sm text-stone-600 md:flex">
-            <a href="#about" className="transition hover:text-stone-950">
-              About
-            </a>
-            <a href="#business" className="transition hover:text-stone-950">
-              Business
-            </a>
-            <a href="#network" className="transition hover:text-stone-950">
-              Network
-            </a>
-            <a href="#featured" className="transition hover:text-stone-950">
-              Featured
-            </a>
-            <a href="#contact" className="transition hover:text-stone-950">
-              Contact
-            </a>
-          </nav>
-        </div>
-      </header>
+  const heroRef = useRef<HTMLElement>(null);
+  const [activeHero, setActiveHero] = useState(0);
+  const [logoOpacity, setLogoOpacity] = useState(1);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveHero((current) => (current + 1) % heroImages.length);
+    }, 5500);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const hero = heroRef.current;
+      if (!hero) return;
+
+      const rect = hero.getBoundingClientRect();
+      const fadeStart = window.innerHeight * 0.45;
+      const fadeEnd = window.innerHeight * 0.82;
+
+      if (rect.bottom <= fadeStart) {
+        setLogoOpacity(0);
+        return;
+      }
+
+      if (rect.bottom >= fadeEnd) {
+        setLogoOpacity(1);
+        return;
+      }
+
+      setLogoOpacity((rect.bottom - fadeStart) / (fadeEnd - fadeStart));
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white text-brand-text">
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden border-b border-black/5">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(133,31,31,0.08),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(37,99,235,0.08),transparent_24%),linear-gradient(to_bottom,rgba(255,255,255,0.35),transparent)]" />
+        <section
+          ref={heroRef}
+          className="relative h-screen w-full overflow-hidden bg-black"
+        >
+          <header
+            className="pointer-events-none absolute left-0 top-0 z-50 flex w-full justify-center pt-10 md:pt-12"
+            style={{ opacity: logoOpacity }}
+          >
+            <a href="#" className="pointer-events-auto transition-opacity duration-500 ease-out">
+              <img
+                src="/logo-w.png"
+                alt="DotFoodKorea"
+                className="h-7 w-auto object-contain md:h-8"
+              />
+            </a>
+          </header>
 
-        
+          {heroImages.map((src, index) => (
+            <img
+              key={src}
+              src={src}
+              alt={`DotFoodKorea hero image ${index + 1}`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1800ms] ease-in-out ${
+                activeHero === index ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
 
-          <div className="relative mx-auto grid min-h-[88vh] max-w-7xl gap-14 px-6 py-16 md:py-24 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:py-28">
-            <div className="flex flex-col justify-center">
-              <motion.p
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="mb-5 text-xs uppercase tracking-[0.28em] text-stone-500"
-              >
-                Korea-based Global Food Network
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.05 }}
-                className="max-w-4xl text-5xl font-semibold tracking-tight text-stone-950 md:text-7xl"
-              >
-                Connecting World Foods with Korea
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.12 }}
-                className="mt-6 max-w-2xl text-lg leading-8 text-stone-700 md:text-xl"
-              >
-                DotFoodKorea connects premium foods from around the world and
-                delivers Korean food culture globally.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.18 }}
-                className="mt-6 max-w-2xl text-lg leading-8 text-stone-600"
-              >
-                Connecting the world foods, networking dots with Korea.
-              </motion.p>
+          <div className="absolute inset-0 bg-black/35" />
 
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.24 }}
-                className="mt-10 flex flex-wrap gap-4"
-              >
-                <Button
-                  className="rounded-full bg-stone-950 px-6 text-white hover:bg-stone-800"
-                >
-                  <a href="#business" className="flex items-center">
-                    Explore Our Business
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full border-stone-300 bg-white/70 px-6 text-stone-900 backdrop-blur-sm"
-                >
-                  <a href="#contact">Contact Us</a>
-                </Button>
-              </motion.div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.2 }}
-              className="relative flex items-end"
-            >
-              <div className="relative w-full overflow-hidden rounded-[2rem] border border-white/50 bg-white/60 shadow-[0_24px_80px_rgba(28,25,23,0.12)] backdrop-blur-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80"
-                  alt="Premium global food selection"
-                  className="h-[560px] w-full object-cover"
-                />
-           
-              </div>
-            </motion.div>
+          <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center text-white">
+            <h1 className="max-w-4xl text-4xl font-semibold tracking-[-0.03em] md:text-6xl lg:text-7xl">
+              Connecting World Foods
+              <br />
+              with Korea
+            </h1>
+            <p className={`mt-6 max-w-2xl ${heroBodyTextClass}`}>
+              DotFoodKorea connects premium foods from around the world and
+              delivers Korean food culture globally. Connecting the world foods,
+              networking dots with Korea.
+            </p>
           </div>
         </section>
 
-                {/* About */}
-        <section
-          id="about"
-          className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28"
-        >
-          <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <div className="max-w-3xl">
-              <p className="text-xs uppercase tracking-[0.24em] text-stone-500">
-                About
-              </p>
-              <h2 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 md:text-5xl lg:text-6xl">
-                A global food bridge built from Korea
-              </h2>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-700 md:text-xl">
-                DotFoodKorea builds a worldwide network connecting food cultures
-                through Korean exports, premium imports, and strategic local
-                representation.
-              </p>
-            </div>
+        {/* About */}
+        <section id="about" className="relative bg-brand-text">
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent lg:h-48"
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+            <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
+              <div>
+                <h2 className="text-3xl font-semibold tracking-[-0.02em] text-white md:text-5xl lg:text-6xl">
+                  A global food bridge built from Korea
+                </h2>
+                <p className={`mt-6 max-w-xl ${bodyTextLightClass}`}>
+                  We export Korean foods worldwide, import premium foods into
+                  Korea, and support brands entering new markets with practical
+                  commercial infrastructure.
+                </p>
+              </div>
 
-            <div className="grid gap-5 md:grid-cols-2 md:gap-6">
-              <Card className="min-h-[320px] rounded-[1.75rem] border-black/5 bg-white/80 shadow-none">
-                <CardContent className="flex h-full flex-col p-8 md:p-9">
-                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
-                    What We Do
-                  </p>
-                  <p className="mt-5 text-[1.05rem] leading-8 text-stone-700 md:text-lg">
-                    We export Korean foods worldwide, import premium foods into
-                    Korea, and support brands entering new markets with
-                    practical commercial infrastructure.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="min-h-[320px] rounded-[1.75rem] border-black/5 bg-stone-950 text-white shadow-none">
-                <CardContent className="flex h-full flex-col p-8 md:p-9">
-                  <p className="text-xs uppercase tracking-[0.2em] text-white/60">
-                    Vision
-                  </p>
-                  <p className="mt-5 text-[1.05rem] leading-8 text-white md:text-lg">
-                    Korea’s leading K-Food export and premium food import
-                    distribution partner.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-[1.75rem] border-black/5 bg-[#efe5da] shadow-none md:col-span-2">
-                <CardContent className="p-8 md:p-9">
-                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
-                    Mission
-                  </p>
-                  <p className="mt-5 max-w-4xl text-[1.05rem] leading-8 text-stone-700 md:text-lg">
+              <div className="flex flex-col">
+                <div className="p-8 md:p-9">
+                  <p className="text-base font-semibold text-white">Mission</p>
+                  <p className={`${sectionLabelGapClass} ${bodyTextLightClass}`}>
                     Supply K-Food efficiently to global consumers and contribute
                     to the ongoing expansion of K-Culture, while introducing
                     premium international foods to Korean consumers for greater
                     health, quality, and enjoyment.
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+
+                <div className="border-t border-white/15" />
+
+                <div className="p-8 md:p-9">
+                  <p className="text-base font-semibold text-white">Vision</p>
+                  <p className={`${sectionLabelGapClass} ${bodyTextLightClass}`}>
+                    Korea’s leading K-Food export and premium food import
+                    distribution partner.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
+
         {/* Network */}
-        <section id="network" className="border-y border-black/5 bg-white/70">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+        <section id="network" className="bg-brand-section-dark">
+          <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
             <SectionTitle
-              eyebrow="Global Network"
+              eyebrow="Shareholders & Partnership"
               title="Connected markets, partners, and regional execution"
-              description="A multi-region business structure linking producers, distributors, retailers, and buyers through a Korea-centered network."
+              description="DotFoodKorea operates through a Korea-centered network spanning Asia, the U.S., Europe, and South America."
+              centered
             />
 
-<div className="mt-12 grid gap-8 lg:grid-cols-[0.55fr_1.45fr] lg:items-stretch">
-<Card className="h-full overflow-hidden rounded-[2rem] border-black/5 bg-[#1a1715] text-white shadow-none">
-  <CardContent className="relative flex h-full flex-col p-7">
-    <img
-      src="/images/network-space.jpg"
-      alt="Abstract global background"
-      className="absolute inset-0 h-full w-full object-cover opacity-[0.2
-      ]"
-    />
-    <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(26,23,21,0.82),rgba(26,23,21,0.92))]" />
-
-    <div className="relative z-10">
-      <p className="text-[11px] uppercase tracking-[0.22em] text-white/55">
-        Coverage
-      </p>
-      <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white">
-        Operating Regions
-      </h3>
-      <p className="mt-4 max-w-sm text-sm leading-7 text-white/70">
-        DotFoodKorea operates through a Korea-centered network spanning Asia,
-        the U.S., Europe, and South America.
-      </p>
-
-      <div className="mt-auto flex flex-wrap gap-2.5 pt-8">
-        {regions.map((region) => (
-          <span
-            key={region}
-            className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/88"
-          >
-            {region}
-          </span>
-        ))}
-      </div>
-    </div>
-  </CardContent>
-</Card>
-
-  <div>
-    <div className="mb-5">
-      <p className="text-[11px] uppercase tracking-[0.22em] text-stone-500">
-        Partner Network
-      </p>
-      <p className="mt-2 max-w-2xl text-base leading-6 text-stone-600">
-        Strategic regional partnerships supporting sourcing, distribution, and
-        market access across key international markets.
-      </p>
-    </div>
-
-    <div className="space-y-5">
-      {partners.map((partner, idx) => {
-        const partnerLabels = ["Japan Partner", "U.S. Partner", "Europe Partner"];
-        return (
-          <Card
-            key={partner}
-            className={`rounded-[1.75rem] border-black/5 shadow-none ${
-              idx === 0 ? "bg-white" : "bg-white/80"
-            }`}
-          >
-            <CardContent className="flex items-start gap-4 p-6 md:p-7">
-              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-stone-100">
-                <MapPin className="h-4 w-4 text-stone-700" />
-              </div>
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.2em] text-stone-500">
-                  {partnerLabels[idx] ?? "Regional Partner"}
-                </p>
-                <p className="mt-2 text-xl font-semibold tracking-tight text-stone-950">
-                  {partner}
-                </p>
-                <p className="mt-3 text-base leading-8 text-stone-600">
-                  Strategic regional partnership supporting sourcing,
-                  distribution, and market access.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
-  </div>
-</div>
-
-          </div>
-        </section>
-
-        {/* Business Areas */}
-        <section
-          id="business"
-          className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28"
-        >
-          <SectionTitle
-            eyebrow="Business Areas"
-            title="Structured services for food trade, market entry, and distribution"
-            description="DotFoodKorea operates across export, import, consulting, and in-market brand representation with a business model tailored for international growth."
-          />
-
-          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {businessAreas.map((area) => {
-              const Icon = area.icon;
-              return (
-                <Card
-                  key={area.title}
-                  className="rounded-[1.75rem] border-black/5 bg-white/80 shadow-none transition duration-300 hover:-translate-y-1 hover:bg-white"
-                >
-                  <CardContent className="p-7">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-100">
-                      <Icon className="h-5 w-5 text-stone-900" />
-                    </div>
-                    <h3 className="mt-5 text-lg font-semibold text-stone-950">
-                      {area.title}
-                    </h3>
-                    <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
-                      {area.items.map((item) => (
-                        <li key={item} className="flex gap-2">
-                          <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-stone-400" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Categories */}
-        <section className="border-y border-black/5 bg-[#f1ebe3]">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
-            <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
-              <SectionTitle
-                eyebrow="Product Categories"
-                title="From heritage staples to premium curated imports"
-                description="A flexible category mix covering both Korean export essentials and high-value specialty goods."
-              />
-              <div className="grid gap-4 sm:grid-cols-2">
-                {categories.map((item, idx) => (
-                  <div
-                    key={item}
-                    className="rounded-[1.5rem] border border-black/5 bg-white/70 p-6 backdrop-blur-sm"
+            <div className="mt-8">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+                {partnerships.map((partner) => (
+                  <Card
+                    key={partner.tags.join("-")}
+                    className="flex h-full flex-col border-0 bg-transparent shadow-none"
                   >
-                    <p className="text-xs uppercase tracking-[0.18em] text-stone-400">
-                      Category {String(idx + 1).padStart(2, "0")}
-                    </p>
-                    <p className="mt-3 text-lg font-medium text-stone-900">
-                      {item}
-                    </p>
-                  </div>
+                    <CardContent className="flex flex-1 flex-col p-4 md:p-5">
+                      <div className="flex h-16 items-center justify-center">
+                        <img
+                          src={partner.logo}
+                          alt={`${partner.name ?? partner.tags.join(", ")} logo`}
+                          className="max-h-12 w-auto max-w-full object-contain"
+                        />
+                      </div>
+                      {partner.name ? (
+                        <p className="mt-5 text-base font-semibold tracking-[-0.01em] text-brand-text">
+                          {partner.name}
+                        </p>
+                      ) : null}
+                      <div
+                        className={`flex flex-wrap gap-2 ${partner.name ? "mt-2" : "mt-5"}`}
+                      >
+                        {partner.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-brand-section px-2.5 py-1 text-xs font-medium text-brand-text"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="mt-3 flex-1 text-sm text-brand-text">
+                        {partner.description}
+                      </p>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Customers */}
-        <section className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
-          <SectionTitle
-            eyebrow="Key Customers"
-            title="Trusted by premium retail, hospitality, and global distribution channels"
-            description="A customer portfolio spanning Korea, Japan, Europe, and the United States."
-          />
+        {/* Business Areas */}
+        <section id="business" className="bg-brand-section">
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-semibold tracking-[-0.02em] text-brand-text md:text-4xl lg:text-5xl">
+              Structured services for food trade, market entry, and distribution
+            </h2>
+            <p className={`mx-auto mt-6 max-w-3xl ${bodyTextClass}`}>
+              DotFoodKorea operates across export, import, consulting, and
+              in-market brand representation with a business model tailored for
+              international growth.
+            </p>
+          </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-4">
-            {Object.entries(customers).map(([region, brands]) => (
-              <Card
-                key={region}
-                className="rounded-[1.75rem] border-black/5 bg-white/80 shadow-none"
-              >
-                <CardContent className="p-7">
-                  <p className="text-xs uppercase tracking-[0.22em] text-stone-500">
-                    {region}
-                  </p>
-                  <div className="mt-5 space-y-3">
-                    {brands.map((brand) => (
-                      <div
-                        key={brand}
-                        className="rounded-xl bg-stone-50 px-4 py-3 text-sm text-stone-700"
-                      >
-                        {brand}
-                      </div>
-                    ))}
+          <div className="mt-10 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:mt-12 lg:grid-cols-5">
+            {businessAreas.map((area) => {
+              const Icon = area.icon;
+              return (
+                <Card
+                  key={area.title}
+                  className="h-full border-0 bg-[#F5F5F5] shadow-none"
+                >
+                  <CardContent className="flex h-full flex-col p-5 md:p-6">
+                    <Icon className="h-12 w-12 shrink-0 text-brand-text" />
+                    <h3 className="mt-4 text-base font-semibold leading-[1.2] text-brand-text">
+                      {area.title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-[1.2] text-brand-text">
+                      {area.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          </div>
+        </section>
+
+        {/* Categories */}
+        <section className="overflow-hidden bg-white">
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:pt-28 lg:pb-14">
+            <div className="mx-auto max-w-4xl text-center">
+              <h2 className="text-3xl font-semibold tracking-[-0.02em] text-brand-text md:text-5xl lg:text-6xl">
+                From heritage staples to premium curated imports
+              </h2>
+              <p className={`mx-auto mt-6 max-w-3xl ${bodyTextClass}`}>
+                A flexible category mix covering both Korean export essentials
+                and high-value specialty goods.
+              </p>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="flex w-max animate-marquee gap-0">
+              {[...categories, ...categories].map((item, index) => (
+                <div
+                  key={`${item.name}-${index}`}
+                  className="relative h-[min(75vh,480px)] w-[min(42vw,300px)] shrink-0 overflow-hidden"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-brand-text/85 to-transparent" />
+                  <div className="relative flex h-full flex-col justify-end p-5 md:p-6">
+                    <h3 className="text-lg font-semibold text-white md:text-xl">
+                      {item.name}
+                    </h3>
+                    <p className="mt-2 text-xs text-white/85 md:text-sm">
+                      {item.brands}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Customers */}
+        <section className="bg-white pb-0">
+          <div className="mx-auto max-w-7xl px-6 pt-20 lg:px-10 lg:pt-28">
+            <p className={sectionLabelClass}>Key Customers</p>
+          </div>
+
+          <div className="mt-4 grid lg:mt-5 lg:grid-cols-[1fr_2fr] lg:items-stretch">
+            <div className="relative min-h-[420px] overflow-hidden sm:min-h-[520px] lg:min-h-[720px]">
+              <img
+                src="/images/key%20customer.jpg"
+                alt="Key customers"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+
+            <div className="flex items-start px-6 py-3 lg:px-10 lg:py-4">
+              <div className="flex w-full flex-wrap items-start gap-x-10 gap-y-2">
+                {customerRegions.map((region) => {
+                  const brands = customerBrands.filter(
+                    (brand) => brand.category === region
+                  );
+
+                  return (
+                    <div key={region} className={customerRegionGroupClass}>
+                      <p className="text-[11px] uppercase tracking-[0.05em] text-brand-muted">
+                        {region}
+                      </p>
+
+                      <div className={customerInternationalBrandRowClass}>
+                        {brands.map((brand) => (
+                          <div
+                            key={brand.name}
+                            className={customerInternationalBrandTileClass}
+                          >
+                            <div className="flex h-12 w-full items-center justify-center bg-[#F5F5F5]">
+                              {brand.logo ? (
+                                <img
+                                  src={brand.logo}
+                                  alt={`${brand.name} logo`}
+                                  className="max-h-9 max-w-[80%] object-contain"
+                                  onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                            <p className="mt-1.5 min-h-[2.5rem] w-full text-xs text-brand-text">
+                              {brand.name}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Import Partners */}
+        <section className="bg-brand-section pb-0">
+          <div className="mx-auto max-w-7xl px-6 pt-10 lg:px-10 lg:pt-14">
+            <p className={sectionLabelClass}>Overseas Import Partners</p>
+          </div>
+
+          <div className="mt-4 grid lg:mt-5 lg:grid-cols-[2fr_1fr] lg:items-stretch">
+            <div className="order-2 flex items-start px-6 py-3 lg:order-1 lg:px-10 lg:py-4">
+              <div className="flex w-full flex-wrap items-start gap-x-10 gap-y-2">
+                {importPartnerCountries.map((group) => (
+                  <div key={group.country} className={customerRegionGroupClass}>
+                    <p className="text-[11px] uppercase tracking-[0.05em] text-brand-muted">
+                      {group.country}
+                    </p>
+
+                    <div className={customerInternationalBrandRowClass}>
+                      {group.partners.map((partner) => (
+                        <div
+                          key={partner.name}
+                          className={customerInternationalBrandTileClass}
+                        >
+                          <div className="flex h-12 w-full items-center justify-center bg-[#F5F5F5]">
+                            {partner.logo ? (
+                              <img
+                                src={partner.logo}
+                                alt={`${partner.name} logo`}
+                                className="max-h-9 max-w-[80%] object-contain"
+                                onError={(event) => {
+                                  event.currentTarget.style.display = "none";
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                          <p className="mt-1.5 w-full text-xs text-brand-text">
+                            {partner.name}
+                          </p>
+                          {partner.note ? (
+                            <p className="mt-1 w-full text-[11px] leading-[1rem] text-brand-muted">
+                              {partner.note}
+                            </p>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative order-1 min-h-[320px] overflow-hidden sm:min-h-[400px] lg:order-2 lg:min-h-[560px]">
+              <img
+                src="/images/Overseas%20Import%20Partners.jpg"
+                alt="Overseas import partners"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
           </div>
         </section>
 
         {/* Featured */}
-        <section
-          id="featured"
-          className="border-y border-black/5 bg-white/70"
-        >
+        <section id="featured" className="bg-white">
           <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
             <SectionTitle
-              eyebrow="Featured Business & Product"
               title="Specialty retail and heritage food expertise"
               description="Two examples of how DotFoodKorea builds value across both imported premium experiences and trusted Korean food products."
+              centered
             />
 
-            <div className="mt-12 grid gap-6 lg:grid-cols-2">
-              <Card className="overflow-hidden rounded-[2rem] border-black/5 bg-white shadow-none">
-                <div className="relative h-72 overflow-hidden">
+            <div className="mt-12 grid gap-0 lg:grid-cols-2">
+              <Card className="overflow-hidden border-0 bg-white shadow-none">
+                <div className="relative aspect-square overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=1400&q=80"
                     alt="Artisan cheese display"
-                    className="h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <div className="absolute bottom-5 left-5 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-md">
-                    Le Friand
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-text/90 via-brand-text/40 to-transparent" />
+                  <div className="relative flex h-full flex-col justify-end p-5 md:p-7">
+                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-white md:text-2xl">
+                      Le Friand
+                    </h3>
+                    <p className="mt-2 text-base font-semibold text-white md:text-lg">
+                      A specialty cheese boutique inside Shinsegae Gangnam
+                    </p>
+                    <p className={`mt-2 ${bodyTextLightClass}`}>
+                      Le Friand is a curated cheese destination focused on
+                      portioned artisan cheese, expert consultation, and elevated
+                      food experiences within premium retail.
+                    </p>
                   </div>
                 </div>
-                <CardContent className="p-7">
-                  <h3 className="text-2xl font-semibold text-stone-950">
-                    A specialty cheese boutique inside Shinsegae Gangnam
-                  </h3>
-                  <p className="mt-3 text-sm leading-5 text-stone-600">
-                    Le Friand is a curated cheese destination focused on
-                    portioned artisan cheese, expert consultation, and elevated
-                    food experiences within premium retail.
-                  </p>
-                  <div className="mt-6 grid gap-3 text-sm text-stone-700">
-                    <div className="rounded-xl bg-stone-50 px-4 py-3">
-                      Korea’s first cheese portioning store
-                    </div>
-                    <div className="rounded-xl bg-stone-50 px-4 py-3">
-                      Artisan cheese mainly from France and Italy
-                    </div>
-                    <div className="rounded-xl bg-stone-50 px-4 py-3">
-                      Cheese platters, pairing goods, and expert consultation
-                    </div>
-                    <div className="rounded-xl bg-stone-50 px-4 py-3">
-                      Buy only the amount you want, for easy entertaining
-                    </div>
-                  </div>
-                </CardContent>
               </Card>
 
-              <Card className="overflow-hidden rounded-[2rem] border-black/5 bg-stone-950 text-white shadow-none">
-                <div className="relative h-72 overflow-hidden">
+              <Card className="overflow-hidden border-0 bg-white shadow-none">
+                <div className="relative aspect-square overflow-hidden">
                   <img
-                    src="images/traditional.jpg"
+                    src="/images/traditional.jpg"
                     alt="Traditional kimchi product"
-                    className="h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-5 left-5 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-md">
-                    Goidam Kimchi
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-text/90 via-brand-text/40 to-transparent" />
+                  <div className="relative flex h-full flex-col justify-end p-5 md:p-7">
+                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-white md:text-2xl">
+                      Goidam Kimchi
+                    </h3>
+                    <p className="mt-2 text-base font-semibold text-white md:text-lg">
+                      Traditional Korean kimchi with global distribution
+                      capability
+                    </p>
+                    <p className={`mt-2 ${bodyTextLightClass}`}>
+                      A heritage kimchi line with 50 years of tradition, hotel
+                      supply history, export experience, and customized
+                      formulations for diverse dietary and market needs.
+                    </p>
                   </div>
                 </div>
-                <CardContent className="p-7">
-                  <h3 className="text-2xl font-semibold">
-                    Traditional Korean kimchi with global distribution
-                    capability
-                  </h3>
-                  <p className="mt-3 text-sm leading-5 text-white/75">
-                    A heritage kimchi line with 50 years of tradition, hotel
-                    supply history, export experience, and customized
-                    formulations for diverse dietary and market needs.
-                  </p>
-                  <div className="mt-6 grid gap-3 text-sm text-white/85">
-                    <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                      50 years of tradition, with hotel and export supply
-                      history
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                      Variants: Baek, Napa, Water, Kkakdugi, Young Radish,
-                      Cucumber
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                      Special lines: Vegan, Temple, Low-sodium, Halal
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                      Patented packaging for stable distribution and longer
-                      shelf life
-                    </div>
-                  </div>
-                </CardContent>
               </Card>
             </div>
           </div>
         </section>
 
         {/* Contact */}
-        <section
-          id="contact"
-          className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28"
-        >
-          <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-            <div className="space-y-5">
-              <SectionTitle
-                eyebrow="Contact / Partnership"
-                title="Partner with DotFoodKorea"
-                description="For sourcing, import distribution, export projects, or regional brand representation, get in touch with our team."
-              />
-              <div className="rounded-[1.75rem] border border-black/5 bg-stone-950 p-7 text-white">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-5 w-5" />
-                  <p className="text-sm uppercase tracking-[0.18em] text-white/60">
-                    DotFoodKorea
-                  </p>
-                </div>
-                <p className="mt-4 text-2xl font-semibold">
-                  Global Food Trading & Distribution
-                </p>
-                <p className="mt-3 text-sm leading-6 text-white/70">
-                  Based in Korea. Built for international partnerships across
-                  export, import, consulting, and premium retail channels.
-                </p>
+        <section id="contact" className="bg-brand-section">
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+            <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+              <div className="space-y-5">
+                <SectionTitle
+                  eyebrow="Partnership"
+                  title="Partner with DotFoodKorea"
+                  description="For sourcing, import distribution, export projects, or regional brand representation, get in touch with our team."
+                />
+              </div>
+
+              <div className="flex h-full flex-col justify-between">
+                  <div>
+                    <p className={sectionLabelClass}>Contact</p>
+
+                    <a
+                      href="mailto:hello@dfkr.co.kr?subject=DotFoodKorea Partnership Inquiry"
+                      className={`${sectionLabelGapClass} inline-flex items-center gap-2 text-2xl font-semibold tracking-[-0.02em] text-brand-text transition hover:text-brand-muted`}
+                    >
+                      <Mail className="h-6 w-6 shrink-0" />
+                      hello@dfkr.co.kr
+                    </a>
+
+                    <div className={`mt-6 ${bodyTextClass}`}>
+                      <p>Available for global business inquiries</p>
+                      <p>Response within 2–3 business days</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-10">
+                    <a
+                      href="mailto:hello@dfkr.co.kr?subject=DotFoodKorea Partnership Inquiry"
+                      className="inline-flex h-12 items-center rounded-full bg-brand-text px-8 text-sm font-medium text-white transition hover:bg-brand-text/90"
+                    >
+                      Email Us
+                    </a>
+                  </div>
               </div>
             </div>
-
-            <Card className="rounded-[2rem] border-black/5 bg-white/85 shadow-none">
-  <CardContent className="flex h-full flex-col justify-between p-7 md:p-8">
-    <div>
-      <p className="text-[11px] uppercase tracking-[0.22em] text-stone-500">
-        Email
-      </p>
-
-      <a
-        href="mailto:hello@dfkr.co.kr?subject=DotFoodKorea Partnership Inquiry"
-        className="mt-3 inline-block text-2xl font-semibold tracking-tight text-stone-950 hover:opacity-70"
-      >
-        hello@dfkr.co.kr
-      </a>
-
-      <p className="mt-6 max-w-xl text-base leading-8 text-stone-600">
-        Partnership, sourcing, and distribution inquiries welcome.
-      </p>
-
-      <div className="mt-8 text-sm leading-6 text-stone-500">
-        <p>Available for global business inquiries</p>
-        <p>Response within 2–3 business days</p>
-      </div>
-    </div>
-
-    <div className="mt-10">
-      <a
-        href="mailto:hello@dfkr.co.kr?subject=DotFoodKorea Partnership Inquiry"
-        className="inline-flex rounded-full bg-stone-950 px-6 py-3 text-white transition hover:bg-stone-800"
-      >
-        Email Us
-      </a>
-    </div>
-  </CardContent>
-</Card>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-black/5 bg-white/60">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-stone-500 md:flex-row md:items-center md:justify-between lg:px-10">
-          <div>
-            <p className="font-medium text-stone-900">DotFoodKorea</p>
-            <p>Global Food Trading & Distribution · Based in Korea</p>
-          </div>
-          <div className="flex gap-6">
-            <a href="#about" className="transition hover:text-stone-900">
-              About
-            </a>
-            <a href="#business" className="transition hover:text-stone-900">
-              Business
-            </a>
-            <a href="#contact" className="transition hover:text-stone-900">
-              Contact
-            </a>
+      <footer className="border-t border-brand-border bg-brand-section">
+        <div className="mx-auto max-w-7xl px-6 py-8 lg:px-10 text-xs text-brand-text">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr] lg:gap-10">
+            <div className="space-y-1">
+              <p className="font-semibold">DotFoodKorea</p>
+              <p>Founded: October 23, 2025</p>
+              <p>Representative: Seongchun Cho</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <p className="font-semibold">Headquarters</p>
+                <p>
+                  139 Gyopo 1-gil, Oseong-myeon, Pyeongtaek-si, Gyeonggi-do, Korea
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-semibold">Seoul Office</p>
+                <p>11 Gwangnaru-ro 39-gil, Gwangjin-gu, Seoul, Korea</p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-semibold">Tokyo Office</p>
+                <p>Japan</p>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
