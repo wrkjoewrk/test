@@ -66,52 +66,38 @@ const categories = [
   {
     name: "Dairy & Beverages",
     brands: "Maeil Soy Milk, Beverages, Freezer Pops, Frozen Cakes, Selex",
-    image:
-      "https://images.unsplash.com/photo-1550583724-b2692b85b690?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/01-dairy-beverages.jpg",
+    image: "/images/maeil.png",
   },
   {
     name: "Kimchi",
     brands: "Goidam",
-    image:
-      "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/02-kimchi.jpg",
+    image: "/images/goidam%20kimchi.png",
   },
   {
     name: "Rice Cakes (Tteok)",
     brands: "Young-uijeong, Daedoo Foods",
-    image:
-      "https://images.unsplash.com/photo-1604908176997-43162e47a1b5?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/03-rice-cakes.jpg",
+    image: "/images/ricecake.png",
   },
   {
     name: "HMR & CK-Style Products",
     brands: "Super Kitchen",
-    image:
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/04-hmr.jpg",
+    image: "/images/superkitchen.png",
   },
   {
     name: "Branded Foods",
     brands: "Sajo Daerim (Europe)",
-    image:
-      "https://images.unsplash.com/photo-1606780509525-2eeef2a9a1a2?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/05-branded-foods.jpg",
+    image: "/images/sajo%20daerim.png",
   },
   {
     name: "Coffee",
     brands:
       "Jardin, Ediya RTD (Cup, PET, Pouch), Stick Mix, Capsules, Tea",
-    image:
-      "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/06-coffee.jpg",
+    image: "/images/coffee.jpg",
   },
   {
     name: "Desserts & Snacks",
     brands: "Knotted",
-    image:
-      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80",
-    imagePath: "/images/categories/07-desserts-snacks.jpg",
+    image: "/images/knotted.png",
   },
 ];
 
@@ -306,11 +292,13 @@ function SectionTitle({
   title,
   description,
   centered = false,
+  light = false,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   centered?: boolean;
+  light?: boolean;
 }) {
   return (
     <div
@@ -318,17 +306,27 @@ function SectionTitle({
         centered ? "mx-auto text-center" : ""
       }`}
     >
-      {eyebrow ? <p className={sectionLabelClass}>{eyebrow}</p> : null}
+      {eyebrow ? (
+        <p
+          className={
+            light
+              ? "text-base font-semibold text-white"
+              : sectionLabelClass
+          }
+        >
+          {eyebrow}
+        </p>
+      ) : null}
       <h2
-        className={`text-3xl font-semibold tracking-[-0.02em] text-brand-text md:text-5xl lg:text-6xl ${
-          eyebrow ? sectionLabelGapClass : ""
-        }`}
+        className={`text-3xl font-semibold tracking-[-0.02em] md:text-5xl lg:text-6xl ${
+          light ? "text-white" : "text-brand-text"
+        } ${eyebrow ? sectionLabelGapClass : ""}`}
       >
         {title}
       </h2>
       {description ? (
         <p
-          className={`mt-3 ${bodyTextClass} ${
+          className={`mt-3 ${light ? bodyTextLightClass : bodyTextClass} ${
             centered ? "mx-auto max-w-3xl" : "max-w-3xl"
           }`}
         >
@@ -435,11 +433,13 @@ export default function DotFoodKoreaLandingPage() {
           />
           <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
             <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
-              <div>
+              <div className="text-center lg:text-left">
                 <h2 className="text-3xl font-semibold tracking-[-0.02em] text-white md:text-5xl lg:text-6xl">
-                  A global food bridge built from Korea
+                  A global food bridge
+                  <br className="md:hidden" />
+                  built from Korea
                 </h2>
-                <p className={`mt-6 max-w-xl ${bodyTextLightClass}`}>
+                <p className={`mx-auto mt-6 max-w-xl lg:mx-0 ${bodyTextLightClass}`}>
                   We export Korean foods worldwide, import premium foods into
                   Korea, and support brands entering new markets with practical
                   commercial infrastructure.
@@ -488,7 +488,7 @@ export default function DotFoodKoreaLandingPage() {
                     key={partner.tags.join("-")}
                     className="flex h-full flex-col border-0 bg-transparent shadow-none"
                   >
-                    <CardContent className="flex flex-1 flex-col p-4 md:p-5">
+                    <CardContent className="flex flex-1 flex-col items-center p-4 text-center md:p-5">
                       <div className="flex h-16 items-center justify-center">
                         <img
                           src={partner.logo}
@@ -502,7 +502,7 @@ export default function DotFoodKoreaLandingPage() {
                         </p>
                       ) : null}
                       <div
-                        className={`flex flex-wrap gap-2 ${partner.name ? "mt-2" : "mt-5"}`}
+                        className={`flex flex-wrap justify-center gap-2 ${partner.name ? "mt-2" : "mt-5"}`}
                       >
                         {partner.tags.map((tag) => (
                           <span
@@ -576,12 +576,12 @@ export default function DotFoodKoreaLandingPage() {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative pb-14 lg:pb-20">
             <div className="flex w-max animate-marquee gap-0">
               {[...categories, ...categories].map((item, index) => (
                 <div
                   key={`${item.name}-${index}`}
-                  className="relative h-[min(75vh,480px)] w-[min(42vw,300px)] shrink-0 overflow-hidden"
+                  className="relative h-[min(55vh,280px)] w-[min(48vw,240px)] shrink-0 overflow-hidden md:h-[min(75vh,480px)] md:w-[min(42vw,300px)]"
                 >
                   <img
                     src={item.image}
@@ -605,12 +605,8 @@ export default function DotFoodKoreaLandingPage() {
 
         {/* Customers */}
         <section className="bg-white pb-0">
-          <div className="mx-auto max-w-7xl px-6 pt-20 lg:px-10 lg:pt-28">
-            <p className={sectionLabelClass}>Key Customers</p>
-          </div>
-
-          <div className="mt-4 grid lg:mt-5 lg:grid-cols-[1fr_2fr] lg:items-stretch">
-            <div className="relative min-h-[420px] overflow-hidden sm:min-h-[520px] lg:min-h-[720px]">
+          <div className="grid gap-0 lg:grid-cols-[1fr_2fr] lg:items-stretch">
+            <div className="relative order-2 min-h-[240px] overflow-hidden sm:min-h-[400px] lg:order-1 lg:min-h-[720px]">
               <img
                 src="/images/key%20customer.jpg"
                 alt="Key customers"
@@ -618,46 +614,50 @@ export default function DotFoodKoreaLandingPage() {
               />
             </div>
 
-            <div className="flex items-start px-6 py-3 lg:px-10 lg:py-4">
-              <div className="flex w-full flex-wrap items-start gap-x-10 gap-y-2">
-                {customerRegions.map((region) => {
-                  const brands = customerBrands.filter(
-                    (brand) => brand.category === region
-                  );
+            <div className="order-1 flex items-start px-6 pt-20 pb-10 lg:order-2 lg:px-10 lg:pt-14 lg:pb-4">
+              <div className="w-full">
+                <p className={sectionLabelClass}>Key Customers</p>
 
-                  return (
-                    <div key={region} className={customerRegionGroupClass}>
-                      <p className="text-[11px] uppercase tracking-[0.05em] text-brand-muted">
-                        {region}
-                      </p>
+                <div className={`${sectionLabelGapClass} flex w-full flex-wrap items-start gap-x-10 gap-y-2`}>
+                  {customerRegions.map((region) => {
+                    const brands = customerBrands.filter(
+                      (brand) => brand.category === region
+                    );
 
-                      <div className={customerInternationalBrandRowClass}>
-                        {brands.map((brand) => (
-                          <div
-                            key={brand.name}
-                            className={customerInternationalBrandTileClass}
-                          >
-                            <div className="flex h-12 w-full items-center justify-center bg-[#F5F5F5]">
-                              {brand.logo ? (
-                                <img
-                                  src={brand.logo}
-                                  alt={`${brand.name} logo`}
-                                  className="max-h-9 max-w-[80%] object-contain"
-                                  onError={(event) => {
-                                    event.currentTarget.style.display = "none";
-                                  }}
-                                />
-                              ) : null}
+                    return (
+                      <div key={region} className={customerRegionGroupClass}>
+                        <p className="text-[11px] uppercase tracking-[0.05em] text-brand-muted">
+                          {region}
+                        </p>
+
+                        <div className={customerInternationalBrandRowClass}>
+                          {brands.map((brand) => (
+                            <div
+                              key={brand.name}
+                              className={customerInternationalBrandTileClass}
+                            >
+                              <div className="flex h-12 w-full items-center justify-center bg-[#F5F5F5]">
+                                {brand.logo ? (
+                                  <img
+                                    src={brand.logo}
+                                    alt={`${brand.name} logo`}
+                                    className="max-h-9 max-w-[80%] object-contain"
+                                    onError={(event) => {
+                                      event.currentTarget.style.display = "none";
+                                    }}
+                                  />
+                                ) : null}
+                              </div>
+                              <p className="mt-1.5 min-h-[2.5rem] w-full text-xs text-brand-text">
+                                {brand.name}
+                              </p>
                             </div>
-                            <p className="mt-1.5 min-h-[2.5rem] w-full text-xs text-brand-text">
-                              {brand.name}
-                            </p>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -665,54 +665,54 @@ export default function DotFoodKoreaLandingPage() {
 
         {/* Import Partners */}
         <section className="bg-brand-section pb-0">
-          <div className="mx-auto max-w-7xl px-6 pt-10 lg:px-10 lg:pt-14">
-            <p className={sectionLabelClass}>Overseas Import Partners</p>
-          </div>
+          <div className="grid gap-0 lg:grid-cols-[2fr_1fr] lg:items-stretch">
+            <div className="order-1 flex items-start pl-6 pr-6 pt-10 pb-10 lg:order-1 lg:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] lg:pr-10 lg:pt-14 lg:pb-4">
+              <div className="w-full">
+                <p className={sectionLabelClass}>Overseas Import Partners</p>
 
-          <div className="mt-4 grid lg:mt-5 lg:grid-cols-[2fr_1fr] lg:items-stretch">
-            <div className="order-2 flex items-start px-6 py-3 lg:order-1 lg:px-10 lg:py-4">
-              <div className="flex w-full flex-wrap items-start gap-x-10 gap-y-2">
-                {importPartnerCountries.map((group) => (
-                  <div key={group.country} className={customerRegionGroupClass}>
-                    <p className="text-[11px] uppercase tracking-[0.05em] text-brand-muted">
-                      {group.country}
-                    </p>
+                <div className={`${sectionLabelGapClass} flex w-full flex-wrap items-start gap-x-10 gap-y-2`}>
+                  {importPartnerCountries.map((group) => (
+                    <div key={group.country} className={customerRegionGroupClass}>
+                      <p className="text-[11px] uppercase tracking-[0.05em] text-brand-muted">
+                        {group.country}
+                      </p>
 
-                    <div className={customerInternationalBrandRowClass}>
-                      {group.partners.map((partner) => (
-                        <div
-                          key={partner.name}
-                          className={customerInternationalBrandTileClass}
-                        >
-                          <div className="flex h-12 w-full items-center justify-center bg-[#F5F5F5]">
-                            {partner.logo ? (
-                              <img
-                                src={partner.logo}
-                                alt={`${partner.name} logo`}
-                                className="max-h-9 max-w-[80%] object-contain"
-                                onError={(event) => {
-                                  event.currentTarget.style.display = "none";
-                                }}
-                              />
+                      <div className={customerInternationalBrandRowClass}>
+                        {group.partners.map((partner) => (
+                          <div
+                            key={partner.name}
+                            className={customerInternationalBrandTileClass}
+                          >
+                            <div className="flex h-12 w-full items-center justify-center bg-[#F5F5F5]">
+                              {partner.logo ? (
+                                <img
+                                  src={partner.logo}
+                                  alt={`${partner.name} logo`}
+                                  className="max-h-9 max-w-[80%] object-contain"
+                                  onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                            <p className="mt-1.5 w-full text-xs text-brand-text">
+                              {partner.name}
+                            </p>
+                            {partner.note ? (
+                              <p className="mt-1 w-full text-[11px] leading-[1rem] text-brand-muted">
+                                {partner.note}
+                              </p>
                             ) : null}
                           </div>
-                          <p className="mt-1.5 w-full text-xs text-brand-text">
-                            {partner.name}
-                          </p>
-                          {partner.note ? (
-                            <p className="mt-1 w-full text-[11px] leading-[1rem] text-brand-muted">
-                              {partner.note}
-                            </p>
-                          ) : null}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="relative order-1 min-h-[320px] overflow-hidden sm:min-h-[400px] lg:order-2 lg:min-h-[560px]">
+            <div className="relative order-2 min-h-[240px] overflow-hidden sm:min-h-[400px] lg:order-2 lg:min-h-[560px]">
               <img
                 src="/images/Overseas%20Import%20Partners.jpg"
                 alt="Overseas import partners"
@@ -785,7 +785,7 @@ export default function DotFoodKoreaLandingPage() {
         </section>
 
         {/* Contact */}
-        <section id="contact" className="bg-brand-section">
+        <section id="contact" className="bg-brand-text">
           <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
             <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
               <div className="space-y-5">
@@ -793,31 +793,32 @@ export default function DotFoodKoreaLandingPage() {
                   eyebrow="Partnership"
                   title="Partner with DotFoodKorea"
                   description="For sourcing, import distribution, export projects, or regional brand representation, get in touch with our team."
+                  light
                 />
               </div>
 
               <div className="flex h-full flex-col justify-between">
                   <div>
-                    <p className={sectionLabelClass}>Contact</p>
+                    <p className="text-base font-semibold text-white">Contact</p>
 
                     <a
                       href="mailto:hello@dfkr.co.kr?subject=DotFoodKorea Partnership Inquiry"
-                      className={`${sectionLabelGapClass} inline-flex items-center gap-2 text-2xl font-semibold tracking-[-0.02em] text-brand-text transition hover:text-brand-muted`}
+                      className={`${sectionLabelGapClass} inline-flex items-center gap-2 text-2xl font-semibold tracking-[-0.02em] text-white transition hover:text-white/85`}
                     >
                       <Mail className="h-6 w-6 shrink-0" />
                       hello@dfkr.co.kr
                     </a>
 
-                    <div className={`mt-6 ${bodyTextClass}`}>
-                      <p>Available for global business inquiries</p>
-                      <p>Response within 2–3 business days</p>
+                    <div className={`mt-3 ${bodyTextLightClass}`}>
+                      <p>Available for global business inquiries.</p>
+                      <p>Response within 2–3 business days.</p>
                     </div>
                   </div>
 
                   <div className="mt-10">
                     <a
                       href="mailto:hello@dfkr.co.kr?subject=DotFoodKorea Partnership Inquiry"
-                      className="inline-flex h-12 items-center rounded-full bg-brand-text px-8 text-sm font-medium text-white transition hover:bg-brand-text/90"
+                      className="inline-flex h-12 items-center rounded-full bg-white px-8 text-sm font-medium text-brand-text transition hover:bg-white/90"
                     >
                       Email Us
                     </a>
@@ -828,32 +829,30 @@ export default function DotFoodKoreaLandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-brand-border bg-brand-section">
-        <div className="mx-auto max-w-7xl px-6 py-8 lg:px-10 text-xs text-brand-text">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr] lg:gap-10">
+      <footer className="border-t border-white/15 bg-brand-text">
+        <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-white/85 lg:px-10">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
             <div className="space-y-1">
-              <p className="font-semibold">DotFoodKorea</p>
+              <p className="font-semibold text-white">DotFoodKorea</p>
               <p>Founded: October 23, 2025</p>
               <p>Representative: Seongchun Cho</p>
             </div>
 
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <p className="font-semibold">Headquarters</p>
-                <p>
-                  139 Gyopo 1-gil, Oseong-myeon, Pyeongtaek-si, Gyeonggi-do, Korea
-                </p>
-              </div>
+            <div className="space-y-1">
+              <p className="font-semibold text-white">Headquarters</p>
+              <p>
+                139 Gyopo 1-gil, Oseong-myeon, Pyeongtaek-si, Gyeonggi-do, Korea
+              </p>
+            </div>
 
-              <div className="space-y-1">
-                <p className="font-semibold">Seoul Office</p>
-                <p>11 Gwangnaru-ro 39-gil, Gwangjin-gu, Seoul, Korea</p>
-              </div>
+            <div className="space-y-1">
+              <p className="font-semibold text-white">Seoul Office</p>
+              <p>11 Gwangnaru-ro 39-gil, Gwangjin-gu, Seoul, Korea</p>
+            </div>
 
-              <div className="space-y-1">
-                <p className="font-semibold">Tokyo Office</p>
-                <p>Japan</p>
-              </div>
+            <div className="space-y-1">
+              <p className="font-semibold text-white">Tokyo Office</p>
+              <p>Japan</p>
             </div>
           </div>
         </div>
