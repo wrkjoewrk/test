@@ -120,7 +120,7 @@ const partnerships = [
     name: null,
     description: "Korea-based operating leadership",
     logo: "/images/logo-b.png",
-    logoClassName: "max-w-[72%] lg:max-w-full",
+    logoClassName: "max-w-28 sm:max-w-32 lg:max-w-full",
   },
   {
     tags: ["Europe"],
@@ -490,11 +490,15 @@ export default function DotFoodKoreaLandingPage() {
                     className="flex h-full flex-col border-0 bg-transparent shadow-none"
                   >
                     <CardContent className="flex flex-1 flex-col items-center p-4 text-center md:p-5">
-                      <div className="flex h-16 items-center justify-center">
+                      <div className="flex h-16 w-full items-center justify-center">
                         <img
                           src={partner.logo}
                           alt={`${partner.name ?? partner.tags.join(", ")} logo`}
-                          className={`max-h-12 w-auto max-w-full object-contain ${"logoClassName" in partner ? partner.logoClassName : ""}`}
+                          className={`max-h-12 w-auto object-contain ${
+                            "logoClassName" in partner
+                              ? partner.logoClassName
+                              : "max-w-full"
+                          }`}
                         />
                       </div>
                       {partner.name ? (
