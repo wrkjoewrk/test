@@ -76,7 +76,7 @@ const categories = [
   {
     name: "Rice Cakes (Tteok)",
     brands: "Young-uijeong, Daedoo Foods",
-    image: "/images/ricecake.png",
+    image: "/images/rice%20cake.jpg",
   },
   {
     name: "HMR & CK-Style Products",
