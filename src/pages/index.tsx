@@ -120,7 +120,7 @@ const partnerships = [
     name: null,
     description: "Korea-based operating leadership",
     logo: "/images/logo-b.png",
-    logoClassName: "max-w-28 sm:max-w-32 lg:max-w-full",
+    logoClassName: "max-w-48 lg:max-w-full",
   },
   {
     tags: ["Europe"],
