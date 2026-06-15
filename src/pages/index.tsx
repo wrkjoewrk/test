@@ -119,7 +119,8 @@ const partnerships = [
     tags: ["Korea HQ"],
     name: null,
     description: "Korea-based operating leadership",
-    logo: "/images/partner logo3.png",
+    logo: "/images/logo-b.png",
+    logoClassName: "max-w-[72%] lg:max-w-full",
   },
   {
     tags: ["Europe"],
@@ -493,7 +494,7 @@ export default function DotFoodKoreaLandingPage() {
                         <img
                           src={partner.logo}
                           alt={`${partner.name ?? partner.tags.join(", ")} logo`}
-                          className="max-h-12 w-auto max-w-full object-contain"
+                          className={`max-h-12 w-auto max-w-full object-contain ${"logoClassName" in partner ? partner.logoClassName : ""}`}
                         />
                       </div>
                       {partner.name ? (
