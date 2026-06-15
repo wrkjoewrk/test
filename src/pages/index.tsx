@@ -836,7 +836,7 @@ export default function DotFoodKoreaLandingPage() {
 
       <footer className="border-t border-white/15 bg-brand-text">
         <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-white/85 lg:px-10">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
             <div className="space-y-1">
               <p className="font-semibold text-white">DotFoodKorea</p>
               <p>Founded: October 23, 2025</p>
